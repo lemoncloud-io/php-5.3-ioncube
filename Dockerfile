@@ -1,5 +1,6 @@
 FROM buildpack-deps:jessie
-MAINTAINER Slawek Kolodziej <hfrntt@gmail.com>
+
+MAINTAINER Steve Lemon <steve@lemoncloud.io>
 
 RUN apt-get update && apt-get install -y curl && rm -r /var/lib/apt/lists/*
 
@@ -127,11 +128,15 @@ RUN mkdir -p \
 	/var/log/supervisor
 
 # Configure entrypoints
-RUN mkdir -p /entrypoint
+RUN mkdir -p /entrypointsudo docker attach 665b4a
 
 COPY entrypoint.sh /entrypoint/entrypoint.sh
 COPY exim/entrypoint.sh /entrypoint/exim-entrypoint.sh
 COPY php/entrypoint.sh /entrypoint/php-entrypoint.sh
+
+# Additional default configurations
+COPY nginx/default /etc/nginx/sites-available/default
+
 
 RUN chmod a+x /entrypoint/*.sh
 
