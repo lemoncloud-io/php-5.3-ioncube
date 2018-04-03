@@ -43,10 +43,13 @@ $ docker run -it --rm --name my-running-app -v -p 8000:80 my-php-app /bin/bash
 
 # 이건 뭐, 거의 운영 설정으로 웹서비스 소스가 있는 위치에서 실행.
 $ docker run -it --rm --name my-running-app -v /var/www/html:/var/www/html -p 8000:80 my-php-app
+
+# 생성된 이미지를 직접 올리려고 할때..
+$ docker run -it --rm --name my-running-app -v /var/www/html:/var/www/html -p 80:80 -d sal9-one:mcrypt
 ```
 
 # 참고
 
 * [docker-php-5.3-apache](https://github.com/eugeneware/docker-php-5.3-apache)
 * [docker-php-5.3](https://github.com/helderco/docker-php-5.3)
-
+* [mcrypt 설치 문제시](https://taroth.kr/?p=5712)

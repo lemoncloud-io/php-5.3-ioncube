@@ -106,7 +106,7 @@ RUN docker-php-ext-configure \
   	gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu
 
 # Install extensions
-RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl
+RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl mcrypt
 
 RUN pear channel-discover zenovich.github.io/pear
 
