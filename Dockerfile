@@ -65,6 +65,7 @@ RUN set -x \
     --enable-fpm \
     --with-fpm-user=www-data \
     --with-fpm-group=www-data \
+    --disable-hash \
  && make -j"$(nproc)" \
  && make install \
  && dpkg -r bison libbison-dev \
@@ -105,8 +106,11 @@ RUN mkdir -p \
 RUN docker-php-ext-configure \
   	gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu
 
+RUN docker-php-ext-configure \
+  	hash --with-mhash=/usr
+
 # Install extensions
-RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl mcrypt
+RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl mcrypt hash
 
 RUN pear channel-discover zenovich.github.io/pear
 

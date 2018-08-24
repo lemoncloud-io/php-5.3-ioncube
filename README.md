@@ -43,9 +43,6 @@ $ docker run -it --rm --name my-running-app -v -p 8000:80 my-php-app /bin/bash
 
 # 이건 뭐, 거의 운영 설정으로 웹서비스 소스가 있는 위치에서 실행.
 $ docker run -it --rm --name my-running-app -v /var/www/html:/var/www/html -p 8000:80 my-php-app
-
-# 생성된 이미지를 직접 올리려고 할때..
-$ docker run -it --rm --name my-running-app -v /var/www/html:/var/www/html -p 80:80 -d sal9-one:mcrypt
 ```
 
 # 참고
@@ -53,3 +50,37 @@ $ docker run -it --rm --name my-running-app -v /var/www/html:/var/www/html -p 80
 * [docker-php-5.3-apache](https://github.com/eugeneware/docker-php-5.3-apache)
 * [docker-php-5.3](https://github.com/helderco/docker-php-5.3)
 * [mcrypt 설치 문제시](https://taroth.kr/?p=5712)
+
+
+---------------------
+# 추가 업데이트 사항
+
+## npay 암호화 지원을 위한 (mhash 설치) @180824
+
+- npay는 `php option --with-mhash --with-mcrypt --with-dom --with-zlib-dir` 의 설정 필요함. (기본 hash가 안먹음 -_-;;)
+
+```bash
+$ cd /usr/src/php
+$ ./configure --disable-cgi \
+    $(command -v apxs2 > /dev/null 2>&1 && echo '--with-apxs2' || true) \
+    --with-config-file-path="/usr/local/lib" \
+    --with-config-file-scan-dir="/usr/local/lib/conf.d" \
+    --with-mysql \
+    --with-mysqli \
+    --with-pdo-mysql \
+    --with-openssl=/usr/local/ssl \
+    --with-zlib \
+    --with-zlib-dir=/lib/x86_64-linux-gnu \
+    --enable-fpm \
+    --with-fpm-user=www-data \
+    --with-fpm-group=www-data \
+    --disable-hash
+$ make -j"$(nproc)"
+$ make install
+# $ dpkg -r bison libbison-dev
+# $ apt-get purge -y --auto-remove autoconf2.13
+$ make clean
+
+$ docker-php-ext-configure hash --with-mhash=/usr
+$ docker-php-ext-install hash
+```
