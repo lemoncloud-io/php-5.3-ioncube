@@ -38,7 +38,7 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 
 # php 5.3 needs older autoconf
 RUN set -x \
- && apt-get update && apt-get install -y autoconf2.13 zlib1g zlib1g-dev && rm -r /var/lib/apt/lists/* \
+ && apt-get update && apt-get install -y autoconf2.13 zlib1g zlib1g-dev php5-mcrypt && rm -r /var/lib/apt/lists/* \
  && curl -SLO http://launchpadlibrarian.net/140087283/libbison-dev_2.7.1.dfsg-1_amd64.deb \
  && curl -SLO http://launchpadlibrarian.net/140087282/bison_2.7.1.dfsg-1_amd64.deb \
  && dpkg -i libbison-dev_2.7.1.dfsg-1_amd64.deb \
@@ -110,7 +110,13 @@ RUN docker-php-ext-configure \
   	hash --with-mhash=/usr
 
 # Install extensions
-RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl mcrypt hash
+RUN docker-php-ext-install curl mbstring gd soap calendar xmlrpc xsl hash
+
+# NOTE - workaround to install mcrypt. @190903
+COPY lib/libmcrypt-2.5.8.tar.gz /root
+RUN cd /root && tar xzf libmcrypt-2.5.8.tar.gz
+RUN cd /root/libmcrypt-2.5.8 && ./configure && make && make install
+RUN docker-php-ext-install mcrypt
 
 RUN pear channel-discover zenovich.github.io/pear
 
