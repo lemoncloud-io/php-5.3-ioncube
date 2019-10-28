@@ -43,6 +43,27 @@ $ docker run -it --rm --name my-running-app -v "$PWD":/var/www/html php53-ioncub
 $ docker run -it --rm --name my-running-app -v -p 8000:80 php53-ioncube /bin/bash
 ```
 
+
+## AWS ECR Repository
+
+- From AWS ECR -> `Create resposity` -> input `php53-ioncube`, then create.
+
+```bash
+# with aws 'lemon' profile, login docker.
+$ $(aws ecr get-login --profile <profile> --no-include-email --region ap-northeast-2)
+
+# Save Account-ID by profile
+$ export AWS_NO=$(aws sts get-caller-identity --output text --query 'Account' --profile <profile>)
+
+# tag your image with a keyword. (lemon)
+$ docker tag php53-ioncube:latest "$AWS_NO.dkr.ecr.ap-northeast-2.amazonaws.com/php53-ioncube:latest"
+
+# push image to repository
+$ docker push "$AWS_NO.dkr.ecr.ap-northeast-2.amazonaws.com/php53-ioncube:latest"
+```
+
+
+
 ## 참고
 
 * [docker-php-5.3-apache](https://github.com/eugeneware/docker-php-5.3-apache)
