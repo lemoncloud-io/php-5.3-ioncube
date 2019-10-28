@@ -60,6 +60,9 @@ $ docker tag php53-ioncube:latest "$AWS_NO.dkr.ecr.ap-northeast-2.amazonaws.com/
 
 # push image to repository
 $ docker push "$AWS_NO.dkr.ecr.ap-northeast-2.amazonaws.com/php53-ioncube:latest"
+
+# pull image to repository
+$ docker pull "$AWS_NO.dkr.ecr.ap-northeast-2.amazonaws.com/php53-ioncube:latest"
 ```
 
 
