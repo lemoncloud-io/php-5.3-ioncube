@@ -65,6 +65,7 @@ RUN set -x \
     --enable-fpm \
     --with-fpm-user=www-data \
     --with-fpm-group=www-data \
+    --enable-exif \
     --disable-hash \
  && make -j"$(nproc)" \
  && make install \
