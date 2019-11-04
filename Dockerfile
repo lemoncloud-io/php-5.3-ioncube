@@ -38,7 +38,8 @@ RUN mkdir -p $PHP_INI_DIR/conf.d
 
 # php 5.3 needs older autoconf
 RUN set -x \
- && apt-get update && apt-get install -y autoconf2.13 zlib1g zlib1g-dev php5-mcrypt && rm -r /var/lib/apt/lists/* \
+ && apt-get update && apt-get install -y autoconf2.13 libfreetype6-dev libpng12-dev libpng-dev zlib1g zlib1g-dev php5-mcrypt \
+ && rm -r /var/lib/apt/lists/* \
  && curl -SLO http://launchpadlibrarian.net/140087283/libbison-dev_2.7.1.dfsg-1_amd64.deb \
  && curl -SLO http://launchpadlibrarian.net/140087282/bison_2.7.1.dfsg-1_amd64.deb \
  && dpkg -i libbison-dev_2.7.1.dfsg-1_amd64.deb \
@@ -103,9 +104,17 @@ RUN mkdir -p \
     /usr/local/etc/php/conf.d \
     /etc/php
 
+# fix: configure: error: freetype.h not found.
+RUN mkdir /usr/include/freetype2/freetype
+RUN ln -s /usr/include/freetype2/freetype.h /usr/include/freetype2/freetype/freetype.h
+
 # Configure extensions
 RUN docker-php-ext-configure \
-  	gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu
+  	gd \
+    --with-jpeg-dir=/usr/lib/x86_64-linux-gnu \
+    --enable-gd-native-ttf \
+    --with-freetype-dir=/usr/include/freetype2 \
+    --with-png-dir=/usr/include
 
 RUN docker-php-ext-configure \
   	hash --with-mhash=/usr
